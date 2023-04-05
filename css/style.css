@@ -1,0 +1,235 @@
+
+body {
+    /* margin-top: 100px;
+    text-align: center; */
+    margin: 0;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: rgb(247, 247, 247);
+}
+
+._grid {
+  
+  margin-top: 3%;
+  /* float: left; */
+}
+
+
+.row {
+    /* text-align: center; */
+    margin-right: auto;
+    margin-left: auto;
+    width: 90%;
+    height: 1.75vh;
+    display: flex;
+}
+
+.node {
+
+    background-color: #FFFFFF;
+    height: 100%;
+    width: 100%;
+   
+    border: 1px;
+    border-style: solid;
+    
+    border-color: rgb(36, 232, 235);
+
+}
+
+.navbar {
+  
+  overflow: hidden;
+  background-color: #021e38;
+  
+}
+
+.navbar a {
+  float: left;
+  font-size: 16px;
+  /* font-weight: bold; */
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.dropdown {
+  float: left;
+  overflow: hidden;
+  
+}
+
+.dropdown .dropbtn {
+  font-size: 16px;  
+  font-weight: bold;
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+
+.navbar a:hover, .dropdown:hover .dropbtn {
+  background-color: rgb(0, 132, 255);
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  float: none;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+.btn {
+
+  display: inline-block;
+  border-radius: 5px;
+  padding: .5em 2.5em;
+  background: white;
+  /* color: blue; */
+  text-decoration: none;
+  cursor: pointer;
+  font-size:  .9rem;
+  text-transform:  uppercase;
+  letter-spacing:  2px;
+  font-weight: bold;
+  /* transition: transform 200ms ease-in-out; */
+  margin-right: 10px;
+  margin-top: 7px;
+}
+
+.btn:hover {
+  transform: scale(1.1);
+  color: rgb(0, 132, 255);
+
+}
+
+.visited-node {
+    animation-name: visitedAnimation;
+    animation-duration: 1.5s;
+    animation-timing-function: ease-out;
+
+    animation-fill-mode: forwards;
+
+  }
+  
+  @keyframes visitedAnimation {
+    0% {
+   
+      background-color: rgba(218, 102, 0, 0.797);
+  
+    }
+  
+
+    100% {
+   
+      background-color: rgba(221, 255, 0, 0.898);
+    }
+  }
+
+  .shortest-path-node {
+    animation-name: shortestPath;
+    animation-duration: 1.5s;
+    animation-timing-function: ease-out;
+
+    animation-fill-mode: forwards;
+
+  }
+  
+  @keyframes shortestPath {
+    0% {
+
+      background-color: rgb(106, 141, 255);
+    }
+
+    100% {
+     
+      background-color: rgb(106, 255, 255);
+    }
+  }
+
+  .my-legend .legend-title {
+    margin-top: 1%;
+    /* text-align: center; */
+    /* margin-left: 1%; */
+    margin-bottom: 1%;
+    /* margin-left: 12%; */
+    font-weight: bold;
+    font-size: 16px;
+    
+    }
+  .my-legend .legend-scale ul {
+    
+    columns: 3;
+    margin: 0;
+    margin-bottom: 5px;
+    padding: 0;
+    float: left;
+    list-style: none;
+    }
+  .my-legend .legend-scale ul li {
+    
+    font-size: 16px;
+    list-style: none;
+    margin-left: 0;
+    line-height: 18px;
+    margin-bottom: 2px;
+    }
+  .my-legend ul.legend-labels li span {
+    
+    display: block;
+    float: left;
+    height: 16px;
+    width: 18px;
+    margin-right: 5px;
+    margin-left: 0;
+    border: 1px solid #999;
+    }
+  .my-legend .legend-source {
+    font-size: 70%;
+    
+    color: #999;
+    clear: both;
+    }
+  .my-legend a {
+    
+    color: #777;
+    }
+
+    #leftbox {
+      display: inline-block;
+      margin-left: 5%;
+
+      width:33%;
+      height:100x;
+      
+  }
+  #middlebox{
+      /* float: left; */
+      display: inline-block;
+
+      width:33%;
+      
+      height:100px;
+  }

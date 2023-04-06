@@ -666,6 +666,117 @@ function bfs() {
 
 
 }
+
+function greedyBfs() {  
+
+    if (VISUALZING) {
+        return;
+    }  
+
+    
+    var explored = [];
+    var directions = getDirections();
+    var delta = directions[0]
+    
+    var maze = getMaze();
+
+    var closed = [];
+    for (let i=0; i <= ROWS+1; i++) {
+        closed[i] = []
+        for (let j=0; j <= COLS+1; j++) {
+            closed[i][j] = false;
+        }
+    }
+    closed[START[0]][START[1]] = true;
+
+    var heuristic = [];
+    for (let i=0; i <= ROWS+1; i++) {
+        heuristic[i] = []
+        for (let j=0; j <= COLS+1; j++) {
+            heuristic[i][j] = calcHeuristic([i,j],GOAL);
+        }
+    }
+
+    var action = [];
+    for (let i=0; i <= ROWS+1; i++) {
+        action[i] = []
+        for (let j=0; j <= COLS+1; j++) {
+            action[i][j] = -1;
+        }
+    }
+
+ 
+    var x = START[0];
+    var y = START[1];
+    var h = heuristic[x][y];
+
+
+    var open = [];
+    open.push([h,x,y]);
+   
+
+    var goalFound = false;
+    var noPath = false;
+ 
+    
+    
+
+    while (!goalFound && !noPath) {
+        explored.push([x,y]);
+        if (open.length == 0) {    
+                 
+            noPath = true;
+            console.log('no path')
+            alertNoPath();
+            
+        } else {
+
+            open = open.sort(function(a, b) { return a[0] - b[0]; });
+        
+            var currentNode = open.shift();
+            
+          
+            x = currentNode[1];
+            y = currentNode[2];
+            h = currentNode[0];
+ 
+            
+            if (x == GOAL[0] && y == GOAL[1]){
+                explored.push([x,y]);
+                VISUALZING = true;
+                goalFound = true;
+            } else {
+                for (i = 0; i < delta.length; i++) {            
+                    let x2 = x + delta[i][0];
+                    let y2 = y + delta[i][1];  
+                                  
+                                      
+                    if (((x2 >= 0) && (x2 < ROWS)) && ((y2 >= 0) && (y2 < COLS))) {
+                        if (closed[x2][y2] == false && maze[x2][y2] != -1) {
+                            var h2 = heuristic[x2][y2];
+                            var neighbor = [h2,x2,y2]
+                            open.push(neighbor);
+                            closed[x2][y2] = true;
+                            action[x2][y2] = i;
+                          
+                            
+                        }
+            
+                    }
+                }
+            }
+
+
+        }
+
+
+    }
+
+    var path = getPath(delta,action);
+    animate(explored,path,GOAL)
+
+
+}
 function dynamic() {
 
     if (VISUALZING) {

@@ -307,7 +307,8 @@ function aStar() {
             
         } else {
 
-            open.sort();   
+            open = open.sort(function(a, b) { return a[0] - b[0]; });
+        
             var currentNode = open.shift();
 
             explored.push([x,y]);

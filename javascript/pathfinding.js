@@ -5,9 +5,8 @@ var ROWS = 35
 var COLS = 60
 var GOAL= [Math.floor(Math.random() * ROWS),57]
 var START  = [Math.floor(Math.random() * ROWS),2]
-console.log(START,GOAL)
-
 var MOUSE_DOWN = false;
+var WALL_COLOR =  'rgb(2, 30, 56)';
 
 
 document.addEventListener("mousedown", function(evnt){
@@ -79,7 +78,7 @@ function createGrid() {
     }
   
     var startNode = document.getElementById(START);
-    console.log(START)
+    // console.log(START)
     var endNode = document.getElementById(GOAL);
     startNode.style.backgroundColor = '#00FF00' // green
     endNode.style.backgroundColor = '#FF0000' // red
@@ -97,21 +96,13 @@ function buildWall(node) {
 
     if (node.id != startNode.id && node.id != endNode.id) { 
         if (window.getComputedStyle(node).backgroundColor == 'rgb(255, 255, 255)') {
-            node.style.borderColor = 'rgb(0, 0, 0)';
-            node.style.backgroundColor = "#000000"; // if open node set black wall
+            node.style.borderColor = WALL_COLOR;
+            node.style.backgroundColor = WALL_COLOR; // if open node set black wall
         }
         // else {
         //     node.style.backgroundColor = "#FFFFFF"; // white
         // }
-    
-
-
-        }
-        // MOUSE_DOWN = false;
-    
-    
-   
-
+        } 
 }
 
 function calcHeuristic(pos0, pos1) {
@@ -169,12 +160,13 @@ function getMaze() {
     }
     for (let i=0; i <= ROWS-1; i++) {
         for (let j=0; j <= COLS-1; j++) {
-            if(document.getElementById(i+","+j).style.backgroundColor == 'rgb(0, 0, 0)') {
+
+            if(document.getElementById(i+","+j).style.backgroundColor == WALL_COLOR) {
                 maze[i][j] = -1;           
             }
         }
     }
-    // console.log(maze)
+    console.log(maze)
     return maze;
 }
 
@@ -182,7 +174,7 @@ function getMaze() {
 function animate(explored,path,goal) {
    
  
-    var timeout = 25;    
+    var timeout = 15;    
     
     for (var i=0;i<explored.length; i++) {
                
@@ -203,18 +195,13 @@ function animate(explored,path,goal) {
                
                     node.classList.add('visited-node');
                    
-                }
-                
+                }                
                
             }                  
 
         },timeout*i)
 
-
     }   
-    
-
-
     
 }
 
@@ -241,15 +228,14 @@ function generateRandomMaze() {
             
             if (node.style.backgroundColor != 'rgb(0, 255, 0)' && node.style.backgroundColor != 'rgb(255, 0, 0)') {
             
-                node.style.borderColor = 'rgb(0, 0, 0)';
-                node.style.backgroundColor = "#000000";      
+                node.style.borderColor = WALL_COLOR;
+                node.style.backgroundColor = WALL_COLOR;      
                
         }   
         
     }
 
 }
-
 
 
 function aStar() {
@@ -360,12 +346,7 @@ function aStar() {
 
 
     }
-    //  (action)
-    //  (closed)
-    //  (expand);
-    // console.log(closed)
     var path = getPath(delta,action);
-    //  (path);
     animate(explored,path,GOAL)
 
 }

@@ -228,7 +228,7 @@ function generateRandomMaze() {
         return;
     }
 
-    for (var i = 0; i < 500; i++) {
+    for (var i = 0; i < 400; i++) {
         x = Math.floor(Math.random() * ROWS);
         y = Math.floor(Math.random() * COLS);
         var node = document.getElementById((x)+","+(y));      
@@ -307,7 +307,7 @@ function aStar() {
 
     var goalFound = false;
     var noPath = false;
-    var wall = -1;
+  
 
     while (!goalFound && !noPath) {
       
@@ -672,6 +672,10 @@ function dynamic() {
         return;
     }  
 
+    var temp = GOAL;
+    GOAL = START;
+    START = temp
+
     
     var directions = getDirections();
     delta = directions[0]
@@ -802,12 +806,13 @@ function dynamic() {
             
         }
 
-        if(x == GOAL[0] && y == GOAL[1]) {            
+        if(x == GOAL[0] && y == GOAL[1]) {  
+                      
             goalReached = true;
             
         }
     }
-
+ 
  
     animate(explored, path,START);
 
@@ -835,6 +840,7 @@ function getPath(delta,action) {
         // path.push([x,y])
 
     }
+  
 
     return path.reverse();
 

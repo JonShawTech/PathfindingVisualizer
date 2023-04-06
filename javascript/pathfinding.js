@@ -7,7 +7,7 @@ var GOAL= [Math.floor(Math.random() * ROWS),57]
 var START  = [Math.floor(Math.random() * ROWS),2]
 var MOUSE_DOWN = false;
 var WALL_COLOR =  'rgb(2, 30, 56)';
-
+var VISUALZING = false;
 
 document.addEventListener("mousedown", function(evnt){
     MOUSE_DOWN = true;
@@ -88,7 +88,10 @@ function createGrid() {
 
 
 
-function buildWall(node) {    
+function buildWall(node) {  
+    if (VISUALZING) {
+        return;
+    }  
   
      
     var startNode = document.getElementById(START);
@@ -220,8 +223,12 @@ function animatePath(path) {
 }
 
 function generateRandomMaze() {
-   
-    for (var i = 0; i < 400; i++) {
+
+    if (VISUALZING) {
+        return;
+    }
+
+    for (var i = 0; i < 500; i++) {
         x = Math.floor(Math.random() * ROWS);
         y = Math.floor(Math.random() * COLS);
         var node = document.getElementById((x)+","+(y));      
@@ -230,15 +237,20 @@ function generateRandomMaze() {
             
                 node.style.borderColor = WALL_COLOR;
                 node.style.backgroundColor = WALL_COLOR;      
-               
+                
         }   
         
     }
+
+
 
 }
 
 
 function aStar() {
+    if (VISUALZING) {
+        return;
+    }  
   
 
     var directions = getDirections();
@@ -303,7 +315,9 @@ function aStar() {
             
             noPath = true;
             console.log('no path');
+       
             alertNoPath();
+       
             
         } else {
 
@@ -320,6 +334,7 @@ function aStar() {
 
             if (x == GOAL[0] && y == GOAL[1]){
                 explored.push([x,y]);
+                VISUALZING = true;
                 goalFound = true;
             } else {
                 for (i = 0; i < delta.length; i++) {            
@@ -354,6 +369,9 @@ function aStar() {
 
 function dijkstra() {  
 
+    if (VISUALZING) {
+        return;
+    }  
     
     var explored = [];
     var directions = getDirections();
@@ -420,6 +438,7 @@ function dijkstra() {
             
             if (x == GOAL[0] && y == GOAL[1]){
                 explored.push([x,y]);
+                VISUALZING = true;
                 goalFound = true;
             } else {
                 for (i = 0; i < delta.length; i++) {            
@@ -454,6 +473,10 @@ function dijkstra() {
 }
 
 function dfs() {  
+
+    if (VISUALZING) {
+        return;
+    }  
 
     
     var expand = [];
@@ -512,6 +535,7 @@ function dfs() {
             
             if (x == GOAL[0] && y == GOAL[1]){
                 expand.push([x,y]);
+                VISUALZING = true;
                 goalFound = true;
             } else {
                 for (i = 0; i < delta.length; i++) {            
@@ -545,6 +569,10 @@ function dfs() {
 }
 
 function bfs() {  
+
+    if (VISUALZING) {
+        return;
+    }  
 
     
     var explored = [];
@@ -605,6 +633,7 @@ function bfs() {
             
             if (x == GOAL[0] && y == GOAL[1]){
                 explored.push([x,y]);
+                VISUALZING = true;
                 goalFound = true;
             } else {
                 for (i = 0; i < delta.length; i++) {            
@@ -638,6 +667,10 @@ function bfs() {
 
 }
 function dynamic() {
+
+    if (VISUALZING) {
+        return;
+    }  
 
     
     var directions = getDirections();
@@ -724,6 +757,8 @@ function dynamic() {
       
         }
     }
+
+    VISUALZING = true;
     
   
 

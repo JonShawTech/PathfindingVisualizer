@@ -175,7 +175,7 @@ function getMaze() {
 
 
 function animate(explored,path,goal) {
-   
+    VISUALZING = true;
  
     var timeout = 15;    
     
@@ -186,7 +186,7 @@ function animate(explored,path,goal) {
              
             
             setTimeout(() => {
-                animatePath(path);
+                animatePath(path,timeout);
               }, timeout * i);
             
             break;
@@ -208,22 +208,28 @@ function animate(explored,path,goal) {
     
 }
 
-function animatePath(path) {
+function animatePath(path,timeout) {
   
     
     for (var i=0;i<path.length-1; i++) {
         const n = document.getElementById(path[i]);
         setTimeout(() => {      
             n.classList.add('shortest-path-node');
+            
+        },25*i)
 
-        },50*i)
+        
     }
+    // setTimeout(() => {      
+    //     VISUALZING = false;
+        
+    // },50*i)
     
 
 }
 
 function generateRandomMaze() {
-
+ 
     if (VISUALZING) {
         return;
     }
@@ -333,8 +339,7 @@ function aStar() {
             count+=1;
 
             if (x == GOAL[0] && y == GOAL[1]){
-                explored.push([x,y]);
-                VISUALZING = true;
+                explored.push([x,y]);                
                 goalFound = true;
             } else {
                 for (i = 0; i < delta.length; i++) {            
@@ -437,8 +442,7 @@ function dijkstra() {
             explored.push([x,y]);          
             
             if (x == GOAL[0] && y == GOAL[1]){
-                explored.push([x,y]);
-                VISUALZING = true;
+                explored.push([x,y]);              
                 goalFound = true;
             } else {
                 for (i = 0; i < delta.length; i++) {            
@@ -534,8 +538,7 @@ function dfs() {
  
             
             if (x == GOAL[0] && y == GOAL[1]){
-                expand.push([x,y]);
-                VISUALZING = true;
+                expand.push([x,y]);              
                 goalFound = true;
             } else {
                 for (i = 0; i < delta.length; i++) {            
@@ -632,8 +635,7 @@ function bfs() {
  
             
             if (x == GOAL[0] && y == GOAL[1]){
-                explored.push([x,y]);
-                VISUALZING = true;
+                explored.push([x,y]);             
                 goalFound = true;
             } else {
                 for (i = 0; i < delta.length; i++) {            
@@ -742,8 +744,7 @@ function greedyBfs() {
  
             
             if (x == GOAL[0] && y == GOAL[1]){
-                explored.push([x,y]);
-                VISUALZING = true;
+                explored.push([x,y]);               
                 goalFound = true;
             } else {
                 for (i = 0; i < delta.length; i++) {            
@@ -873,7 +874,7 @@ function dynamic() {
         }
     }
 
-    VISUALZING = true;
+    
     
   
 

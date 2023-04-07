@@ -237,7 +237,9 @@ function generateRandomMaze() {
         return;
     }
 
-    for (var i = 0; i < 400; i++) {
+    var limit = (height*.01) *  (screen.width *.02);
+
+    for (var i = 0; i < limit; i++) {
         x = Math.floor(Math.random() * ROWS);
         y = Math.floor(Math.random() * COLS);
         var node = document.getElementById((x)+","+(y));      

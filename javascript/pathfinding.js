@@ -308,7 +308,7 @@ function aStar() {
     var h = heuristic[x][y];
     var f = g + h;
     var cost = 1;
-    var count = 0;
+    // var count = 0;
     var wall = -1;
 
    
@@ -324,18 +324,13 @@ function aStar() {
 
     while (!goalFound && !noPath) {
       
-        if (open.size() == 0) {
-            
+        if (open.size() == 0) {            
             noPath = true;
-            console.log('no path');
-       
-            alertNoPath();
-       
+            console.log('no path');       
+            alertNoPath();       
             
         } else {
-
-            // open = open.sort(function(a, b) { return a[0] - b[0]; });
-        
+            // open = open.sort(function(a, b) { return a[0] - b[0]; });        
             // var currentNode = open.shift();
             
             var currentNode = open.front()
@@ -347,26 +342,30 @@ function aStar() {
             y = currentNode[4];
             g = currentNode[1];         
   
-            count+=1;
+            // count+=1;
 
+            // if goal reached 
             if (x == GOAL[0] && y == GOAL[1]){
                 explored.push([x,y]);                
                 goalFound = true;
             } else {
+                // for each neighbor of current node
                 for (i = 0; i < delta.length; i++) {            
                     let x2 = x + delta[i][0];
                     let y2 = y + delta[i][1];
-            
+
+                    // if neighbor is inside of the grid 
                     if ((x2 >= 0) && (x2 < ROWS) && (y2 >= 0) && (y2 < COLS)) {
+
+                        // if neighbor is unvisited and not a wall
                         if (closed[x2][y2] == Infinity && maze[x2][y2] != wall) {
                             g2 = g + cost
                             h2 = heuristic[x2][y2];
                             f2 = g2 + h2;
                             neighbor = [f2,g2,h2,x2,y2];
                             open.enqueue(neighbor);
-                            closed[x2][y2] = 1;
-                          
-                            action[x2][y2] = i;
+                            closed[x2][y2] = 1; // set neighbor as visited                          
+                            action[x2][y2] = i; // came from direction
                         }
             
                     }

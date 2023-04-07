@@ -733,10 +733,10 @@ function greedyBfs() {
  
     
     
-
+    
     while (!goalFound && !noPath) {
         explored.push([x,y]);
-        if (open.length == 0) {    
+        if (open.isEmpty()) {    
                  
             noPath = true;
             console.log('no path')

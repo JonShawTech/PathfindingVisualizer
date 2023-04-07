@@ -1,3 +1,9 @@
+/* @media (min-width: 600px) {
+  #middlebox{
+    float: left;
+      
+  }
+} */
 
 body {
     /* margin-top: 100px;
@@ -9,8 +15,13 @@ body {
 }
 
 ._grid {
-  
-  margin-top: 3%;
+  margin-right: auto;
+  margin-left: auto;
+  width: 95vw;
+  height: 1.75vh;
+  /* display: flex; */
+ 
+  margin-top: 3%; 
   /* float: left; */
 }
 
@@ -19,19 +30,21 @@ body {
     /* text-align: center; */
     margin-right: auto;
     margin-left: auto;
-    width: 90%;
+    width: 95vw;
     height: 1.75vh;
     display: flex;
 }
 
 .node {
 
+
+
     background-color: #FFFFFF;
-    height: 100%;
-    width: 100%;
+    width: 95vw;
+    height: 1.75vh;
    
     border: 1px;
-    border-style: solid;
+    border-style:solid;
     
     border-color: rgb(36, 232, 235);
 
@@ -41,7 +54,17 @@ body {
   
   overflow: hidden;
   background-color: #021e38;
+
+  /* text-align:center; */
+ 
+  /* float: left; */
   
+  
+} 
+
+
+ .navbar-inner {
+ text-align:center;
 }
 
 .navbar a {
@@ -52,6 +75,7 @@ body {
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
+  
 }
 
 .dropdown {
@@ -182,6 +206,8 @@ body {
   .my-legend .legend-scale ul {
     
     columns: 3;
+    
+    
     margin: 0;
     margin-bottom: 5px;
     padding: 0;
@@ -228,6 +254,9 @@ body {
   #middlebox{
       /* float: left; */
       display: inline-block;
+   
+     
+     
 
       width:33%;
       

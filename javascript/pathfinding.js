@@ -1,10 +1,11 @@
 window.onload = createGrid
 
-
-var ROWS = 35
-var COLS = 60
-var GOAL= [Math.floor(Math.random() * ROWS),57]
-var START  = [Math.floor(Math.random() * ROWS),2]
+let width = screen.width;
+let height = screen.height;
+var ROWS = height*.03;
+var COLS = screen.width /25;
+var GOAL= [Math.floor(Math.random() * ROWS),(Math.round(screen.width / 25) -3)]
+var START  = [Math.floor(Math.random() * ROWS),3]
 var MOUSE_DOWN = false;
 var WALL_COLOR =  'rgb(2, 30, 56)';
 var VISUALZING = false;
@@ -47,6 +48,8 @@ function createGrid() {
    
 
     var grid = document.getElementById('_grid');
+    let width = screen.width;
+    console.log(width)
 
     for (var i = 0; i < ROWS; i++) {
         
@@ -161,8 +164,8 @@ function getMaze() {
             maze[i][j] = 0;            
         }
     }
-    for (let i=0; i <= ROWS-1; i++) {
-        for (let j=0; j <= COLS-1; j++) {
+    for (let i=0; i <= ROWS; i++) {
+        for (let j=0; j <= COLS; j++) {
 
             if(document.getElementById(i+","+j).style.backgroundColor == WALL_COLOR) {
                 maze[i][j] = -1;           
@@ -291,6 +294,8 @@ function aStar() {
             action[i][j] = -1;
         }
     }
+
+    var open = new PriorityQueue();
   
 
     
@@ -304,12 +309,12 @@ function aStar() {
     var count = 0;
     var wall = -1;
 
-    var open = [];
+   
     var neighbor = [];
     var explored = [];
 
     var start = [f,g,h,x,y]
-    open.push(start);
+    open.enqueue(start);
 
     var goalFound = false;
     var noPath = false;
@@ -317,7 +322,7 @@ function aStar() {
 
     while (!goalFound && !noPath) {
       
-        if (open.length == 0) {
+        if (open.size() == 0) {
             
             noPath = true;
             console.log('no path');
@@ -327,9 +332,13 @@ function aStar() {
             
         } else {
 
-            open = open.sort(function(a, b) { return a[0] - b[0]; });
+            // open = open.sort(function(a, b) { return a[0] - b[0]; });
         
-            var currentNode = open.shift();
+            // var currentNode = open.shift();
+            
+            var currentNode = open.front()
+            // console.log(currentNode)
+            open.dequeue();
 
             explored.push([x,y]);
             x = currentNode[3];
@@ -352,9 +361,9 @@ function aStar() {
                             h2 = heuristic[x2][y2];
                             f2 = g2 + h2;
                             neighbor = [f2,g2,h2,x2,y2];
-                            open.push(neighbor);
+                            open.enqueue(neighbor);
                             closed[x2][y2] = 1;
-                            // explored.push([x,y])
+                          
                             action[x2][y2] = i;
                         }
             
@@ -411,8 +420,8 @@ function dijkstra() {
     var g = 0;
     var cost = 1;    
 
-    var open = [];
-    open.push([g,x,y]);
+    var open = new PriorityQueue();
+    open.enqueue([g,x,y]);
     var delta_cost = directions[1];
    
 
@@ -423,7 +432,7 @@ function dijkstra() {
 
     while (!goalFound && !noPath) {
        
-        if (open.length == 0) {    
+        if (open.isEmpty()) {    
                  
             noPath = true;
             console.log('no path')
@@ -431,9 +440,10 @@ function dijkstra() {
             
         } else {
 
-            open = open.sort(function(a, b) { return a[0] - b[0]; }); // put lowest g value to front of list             
-            var currentNode = open.shift(); // pop the first element from the list     
-            
+            // open = open.sort(function(a, b) { return a[0] - b[0]; }); // put lowest g value to front of list             
+            // var currentNode = open.shift(); // pop the first element from the list     
+            var currentNode = open.front();
+            open.dequeue();
             g = currentNode[0];
             x = currentNode[1];
             y = currentNode[2];
@@ -454,7 +464,7 @@ function dijkstra() {
                         if (closed[x2][y2] == Infinity && maze[x2][y2] != -1) {
                             
                             g2 = g + cost;                     
-                            open.push([g2,x2,y2]);
+                            open.enqueue([g2,x2,y2]);
                             closed[x2][y2] = 1;
                             action[x2][y2] = i;
                             
@@ -713,8 +723,8 @@ function greedyBfs() {
     var h = heuristic[x][y];
 
 
-    var open = [];
-    open.push([h,x,y]);
+    var open = new PriorityQueue();
+    open.enqueue([h,x,y]);
    
 
     var goalFound = false;
@@ -733,15 +743,14 @@ function greedyBfs() {
             
         } else {
 
-            open = open.sort(function(a, b) { return a[0] - b[0]; });
+            // open = open.sort(function(a, b) { return a[0] - b[0]; });
         
-            var currentNode = open.shift();
-            
+            var currentNode = open.front();
+            open.dequeue();           
           
             x = currentNode[1];
             y = currentNode[2];
-            h = currentNode[0];
- 
+            h = currentNode[0]; 
             
             if (x == GOAL[0] && y == GOAL[1]){
                 explored.push([x,y]);               
@@ -756,7 +765,7 @@ function greedyBfs() {
                         if (closed[x2][y2] == false && maze[x2][y2] != -1) {
                             var h2 = heuristic[x2][y2];
                             var neighbor = [h2,x2,y2]
-                            open.push(neighbor);
+                            open.enqueue(neighbor);
                             closed[x2][y2] = true;
                             action[x2][y2] = i;
                           

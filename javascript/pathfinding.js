@@ -1,10 +1,10 @@
 window.onload = createGrid
 
-let width = screen.width;
-let height = screen.height;
-var ROWS = height*.03;
-var COLS = screen.width /25;
-var GOAL= [Math.floor(Math.random() * ROWS),(Math.round(screen.width / 25) -3)]
+var WIDTH = screen.width;
+var HEIGHT = screen.height;
+var ROWS = HEIGHT *.035;
+var COLS = WIDTH * .04;
+var GOAL= [Math.floor(Math.random() * ROWS),(Math.round(COLS) -4)]
 var START  = [Math.floor(Math.random() * ROWS),3]
 var MOUSE_DOWN = false;
 var WALL_COLOR =  'rgb(2, 30, 56)';
@@ -21,17 +21,20 @@ document.addEventListener("mouseup", function(evnt){
 
 });
 
+// refreshes the page
 function refreshPage(){
     window.location.reload();
 } 
 
+
+// alert if there is no path to the goal node
 function alertNoPath() {
 
     window.alert('No path');
     refreshPage();
 }
 
-
+// returns the neighbors of a node
 function getNeighbors(delta, x, y) {
 
     neighbors = [];
@@ -44,6 +47,8 @@ function getNeighbors(delta, x, y) {
 
     return neighbors;
 }
+
+// create and display the grid
 function createGrid() {
    
 
@@ -90,7 +95,7 @@ function createGrid() {
 }
 
 
-
+// builds walls when clicking and dragging the mouse on the grid
 function buildWall(node) {  
     if (VISUALZING) {
         return;
@@ -111,17 +116,19 @@ function buildWall(node) {
         } 
 }
 
+ // Manhattan distance from each node to the goal
 function calcHeuristic(pos0, pos1) {
-    // Manhattan distance
+   
     var d1 = Math.abs (pos1[0] - pos0[0]);
     var d2 = Math.abs (pos1[1] - pos0[1]);
     return d1 + d2;
   }
 
-function getDirections() {
+// returns the cost and directions
+function getDirections(diag) {
     var ORTHOGONAL_MOVE_COST = 1
     var DIAGONAL_MOVE_COST = 2
-    var diag = false;
+    // var diag = false;
     // var diag = true;
 
     var delta_cost = [ORTHOGONAL_MOVE_COST,
@@ -156,6 +163,7 @@ function getDirections() {
 
 }
 
+// returns the maze state. called when visualizing an algorithm 
 function getMaze() {
     var maze = [];
     for (let i=0; i <= ROWS+1; i++) {
@@ -176,7 +184,7 @@ function getMaze() {
     return maze;
 }
 
-
+// animates the exploring of the grpah by using timeout function in ms
 function animate(explored,path,goal) {
     VISUALZING = true;
  
@@ -211,6 +219,8 @@ function animate(explored,path,goal) {
     
 }
 
+
+// animates the path from start to goal by using timeout function in ms
 function animatePath(path,timeout) {
   
     
@@ -231,13 +241,14 @@ function animatePath(path,timeout) {
 
 }
 
+// Adds random walls to the grid
 function generateRandomMaze() {
  
     if (VISUALZING) {
         return;
     }
 
-    var limit = (height*.01) *  (screen.width *.02);
+    var limit = (HEIGHT * .01) *  (WIDTH * .02);
 
     for (var i = 0; i < limit; i++) {
         x = Math.floor(Math.random() * ROWS);
@@ -258,13 +269,14 @@ function generateRandomMaze() {
 }
 
 
+// A* algorithm
 function aStar() {
     if (VISUALZING) {
         return;
     }  
   
 
-    var directions = getDirections();
+    var directions = getDirections(false);
     delta = directions[0]
     delta_cost = directions[1]
     delta_directions = directions[2]
@@ -382,6 +394,7 @@ function aStar() {
 
 }
 
+// Dijkstra's algorithm 
 function dijkstra() {  
 
     if (VISUALZING) {
@@ -389,7 +402,7 @@ function dijkstra() {
     }  
     
     var explored = [];
-    var directions = getDirections();
+    var directions = getDirections(false);
     delta = directions[0]
     delta_cost = directions[1]
     delta_directions = directions[2]
@@ -487,6 +500,7 @@ function dijkstra() {
 
 }
 
+// Depth-First Search algorithm 
 function dfs() {  
 
     if (VISUALZING) {
@@ -495,7 +509,7 @@ function dfs() {
 
     
     var expand = [];
-    var directions = getDirections();
+    var directions = getDirections(false);
     var delta = directions[0]
     var maze = getMaze();
 
@@ -582,6 +596,7 @@ function dfs() {
 
 }
 
+// Breadth-First Search algorithm 
 function bfs() {  
 
     if (VISUALZING) {
@@ -590,7 +605,7 @@ function bfs() {
 
     
     var explored = [];
-    var directions = getDirections();
+    var directions = getDirections(false);
     var delta = directions[0]
     
     var maze = getMaze();
@@ -680,6 +695,7 @@ function bfs() {
 
 }
 
+// Greedy Best-First Search algorithm 
 function greedyBfs() {  
 
     if (VISUALZING) {
@@ -688,7 +704,7 @@ function greedyBfs() {
 
     
     var explored = [];
-    var directions = getDirections();
+    var directions = getDirections(false);
     var delta = directions[0]
     
     var maze = getMaze();
@@ -788,6 +804,8 @@ function greedyBfs() {
 
 
 }
+
+// Dynamic programming Search algorithm. Searches row by row
 function dynamic() {
 
     if (VISUALZING) {
@@ -799,7 +817,7 @@ function dynamic() {
     START = temp
 
     
-    var directions = getDirections();
+    var directions = getDirections(false);
     delta = directions[0]
     delta_cost = directions[1]
     delta_directions = directions[2]
@@ -943,6 +961,7 @@ function dynamic() {
 }
 
 
+// Returns the path from the start to goal node
 function getPath(delta,action) {  
        
     let x = GOAL[0];

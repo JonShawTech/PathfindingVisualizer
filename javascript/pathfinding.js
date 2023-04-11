@@ -116,7 +116,7 @@ function buildWall(node) {
         } 
 }
 
- // Manhattan distance from each node to the goal
+ // Manhattan distance between 2 nodes
 function calcHeuristic(pos0, pos1) {
    
     var d1 = Math.abs (pos1[0] - pos0[0]);
@@ -150,11 +150,8 @@ function getDirections(diag) {
         DIAGONAL_MOVE_COST,
         DIAGONAL_MOVE_COST]
 
-    delta = [[-1, 0], [1,0], [0, 1], [0, -1],[-1, -1], [-1, 1],  [1, 1], [1, -1]]
-    
+    delta = [[-1, 0], [1,0], [0, 1], [0, -1],[-1, -1], [-1, 1],  [1, 1], [1, -1]]; 
     delta_directions = ["n", "s", "e", "w", "nw", "ne", "se", "sw"];
-
-
 
     }
 
@@ -163,7 +160,7 @@ function getDirections(diag) {
 
 }
 
-// returns the maze state. called when visualizing an algorithm 
+// returns the maze state
 function getMaze() {
     var maze = [];
     for (let i=0; i <= ROWS+1; i++) {
@@ -258,49 +255,36 @@ function generateRandomMaze() {
             if (node.style.backgroundColor != 'rgb(0, 255, 0)' && node.style.backgroundColor != 'rgb(255, 0, 0)') {
             
                 node.style.borderColor = WALL_COLOR;
-                node.style.backgroundColor = WALL_COLOR;      
+                node.style.backgroundColor = WALL_COLOR;    
                 
-        }   
-        
+        }           
     }
-
-
 
 }
 
 
 // A* algorithm
 function aStar() {
+
     if (VISUALZING) {
         return;
-    }  
-  
+    }    
 
     var directions = getDirections(false);
     delta = directions[0]
     delta_cost = directions[1]
     delta_directions = directions[2]
-
-    var maze = getMaze();
     
+    // visited
     var closed = [];
     for (let i=0; i <= ROWS+1; i++) {
         closed[i] = []
         for (let j=0; j <= COLS+1; j++) {
             closed[i][j] = Infinity;
         }
-    }
-    closed[START[0]][START[1]] = 1;
+    }    
 
-
-    var heuristic = [];
-    for (let i=0; i <= ROWS+1; i++) {
-        heuristic[i] = []
-        for (let j=0; j <= COLS+1; j++) {
-            heuristic[i][j] = calcHeuristic([i,j],GOAL);
-        }
-    }
-
+    // came from
     var action = [];
     for (let i=0; i <= ROWS+1; i++) {
         action[i] = []
@@ -309,85 +293,67 @@ function aStar() {
         }
     }
 
-    var open = new PriorityQueue();
-  
-
-    
+    closed[START[0]][START[1]] = 1;
+    var maze = getMaze();
+    var open = new PriorityQueue();  
     var x = START[0];
     var y = START[1];
     var g = 0;
-    var g2 = 0;
-    var h = heuristic[x][y];
+    var h = calcHeuristic([x,y],GOAL);
     var f = g + h;
-    var cost = 1;
-    // var count = 0;
-    var wall = -1;
-
-   
+    var wall = -1;   
     var neighbor = [];
     var explored = [];
 
-    var start = [f,g,h,x,y]
+    var start = [f,g,x,y]
     open.enqueue(start);
 
     var goalFound = false;
-    var noPath = false;
-  
+    var noPath = false;  
 
-    while (!goalFound && !noPath) {
-      
+    while (!goalFound && !noPath) {      
         if (open.size() == 0) {            
             noPath = true;
             console.log('no path');       
             alertNoPath();       
             
         } else {
-            // open = open.sort(function(a, b) { return a[0] - b[0]; });        
-            // var currentNode = open.shift();
-            
-            var currentNode = open.front()
-            // console.log(currentNode)
+
+            var currentNode = open.front();
             open.dequeue();
-
-            explored.push([x,y]);
-            x = currentNode[3];
-            y = currentNode[4];
-            g = currentNode[1];         
-  
-            // count+=1;
-
+            x = currentNode[2];
+            y = currentNode[3];
+            g = currentNode[1];  
+            explored.push([x,y]); 
+   
             // if goal reached 
             if (x == GOAL[0] && y == GOAL[1]){
                 explored.push([x,y]);                
                 goalFound = true;
             } else {
                 // for each neighbor of current node
-                for (i = 0; i < delta.length; i++) {            
-                    let x2 = x + delta[i][0];
-                    let y2 = y + delta[i][1];
+                var neighbors = getNeighbors(delta,x,y)
+                for (i = 0; i < neighbors.length; i++) {            
+                    let x2 = neighbors[i][0];
+                    let y2 = neighbors[i][1];
 
                     // if neighbor is inside of the grid 
                     if ((x2 >= 0) && (x2 < ROWS) && (y2 >= 0) && (y2 < COLS)) {
 
                         // if neighbor is unvisited and not a wall
                         if (closed[x2][y2] == Infinity && maze[x2][y2] != wall) {
-                            g2 = g + cost
-                            h2 = heuristic[x2][y2];
-                            f2 = g2 + h2;
-                            neighbor = [f2,g2,h2,x2,y2];
+                            var g2 = g + delta_cost[i]
+                            h = calcHeuristic([x2,y2],GOAL)
+                            var f2 = g2 + h;
+                            neighbor = [f2,g2,x2,y2];
                             open.enqueue(neighbor);
                             closed[x2][y2] = 1; // set neighbor as visited                          
                             action[x2][y2] = i; // came from direction
-                        }
-            
+                        }            
                     }
                 }
             }
-
-
         }
-
-
     }
     var path = getPath(delta,action);
     animate(explored,path,GOAL)
@@ -409,7 +375,6 @@ function dijkstra() {
 
     var maze = getMaze();
 
-
     var closed = [];
     for (let i=0; i <= ROWS+1; i++) {
         closed[i] = []
@@ -417,9 +382,7 @@ function dijkstra() {
             closed[i][j] = Infinity;
         }
     }
-    closed[START[0]][START[1]] = 1;
-
-
+    
     var action = [];
     for (let i=0; i <= ROWS+1; i++) {
         action[i] = []
@@ -428,20 +391,17 @@ function dijkstra() {
         }
     }
 
- 
+    closed[START[0]][START[1]] = 1;
     var x = START[0];
     var y = START[1];
-    var g = 0;
-    var cost = 1;    
+    var g = 0;  
 
     var open = new PriorityQueue();
     open.enqueue([g,x,y]);
-    var delta_cost = directions[1];
-   
+    var delta_cost = directions[1];   
 
     var goalFound = false;
-    var noPath = false;
-    
+    var noPath = false;   
     
 
     while (!goalFound && !noPath) {
@@ -450,18 +410,14 @@ function dijkstra() {
                  
             noPath = true;
             console.log('no path')
-            alertNoPath();
-            
+            alertNoPath();            
         } else {
 
-            // open = open.sort(function(a, b) { return a[0] - b[0]; }); // put lowest g value to front of list             
-            // var currentNode = open.shift(); // pop the first element from the list     
             var currentNode = open.front();
             open.dequeue();
             g = currentNode[0];
             x = currentNode[1];
-            y = currentNode[2];
-            
+            y = currentNode[2];            
      
             explored.push([x,y]);          
             
@@ -469,15 +425,15 @@ function dijkstra() {
                 explored.push([x,y]);              
                 goalFound = true;
             } else {
-                for (i = 0; i < delta.length; i++) {            
-                    let x2 = x + delta[i][0];
-                    let y2 = y + delta[i][1];  
-                                       
+                var neighbors = getNeighbors(delta,x,y)
+                for (i = 0; i < neighbors.length; i++) {            
+                    let x2 = neighbors[i][0];
+                    let y2 = neighbors[i][1];
                                       
                     if (((x2 >= 0) && (x2 < ROWS)) && ((y2 >= 0) && (y2 < COLS))) {
                         if (closed[x2][y2] == Infinity && maze[x2][y2] != -1) {
                             
-                            g2 = g + cost;                     
+                            var g2 = g + delta_cost[i];                     
                             open.enqueue([g2,x2,y2]);
                             closed[x2][y2] = 1;
                             action[x2][y2] = i;
@@ -520,8 +476,7 @@ function dfs() {
             explored[i][j] = false;
         }
     }
-    explored[START[0]][START[1]] = true;
-
+    
 
     var action = [];
     for (let i=0; i <= ROWS+1; i++) {
@@ -531,48 +486,41 @@ function dfs() {
         }
     }
 
+    explored[START[0]][START[1]] = true;
  
     var x = START[0];
     var y = START[1];
-
-
-
     var open = [];
     open.push([x,y]);
-   
 
     var goalFound = false;
-    var noPath = false;
-    
-    
+    var noPath = false;    
+    var wall = -1;
 
     while (!goalFound && !noPath) {
         expand.push([x,y]);
-        if (open.length == 0) {    
-                 
+        if (open.length == 0) {   
             noPath = true;
             console.log('no path')
             alertNoPath();
             
         } else {
 
-            var currentNode = open.pop();
-         
+            var currentNode = open.pop();         
             x = currentNode[0];
-            y = currentNode[1];
- 
+            y = currentNode[1]; 
             
             if (x == GOAL[0] && y == GOAL[1]){
                 expand.push([x,y]);              
                 goalFound = true;
             } else {
-                for (i = 0; i < delta.length; i++) {            
-                    let x2 = x + delta[i][0];
-                    let y2 = y + delta[i][1];  
-                                  
+                var neighbors = getNeighbors(delta,x,y)
+                for (i = 0; i < neighbors.length; i++) {            
+                    let x2 = neighbors[i][0];
+                    let y2 = neighbors[i][1];                     
                                       
                     if (((x2 >= 0) && (x2 < ROWS)) && ((y2 >= 0) && (y2 < COLS))) {
-                        if (explored[x2][y2] == false && maze[x2][y2] != -1) {
+                        if (explored[x2][y2] == false && maze[x2][y2] != wall) {
                             var neighbor = [x2,y2]
                             open.push(neighbor);
                             explored[x2][y2] = true;
@@ -583,17 +531,11 @@ function dfs() {
                     }
                 }
             }
-
-
         }
-
-
     }
 
     var path = getPath(delta,action);
     animate(expand,path,GOAL)
-
-
 }
 
 // Breadth-First Search algorithm 
@@ -602,7 +544,6 @@ function bfs() {
     if (VISUALZING) {
         return;
     }  
-
     
     var explored = [];
     var directions = getDirections(false);
@@ -658,24 +599,22 @@ function bfs() {
           
             x = currentNode[0];
             y = currentNode[1];
- 
-            
+             
             if (x == GOAL[0] && y == GOAL[1]){
                 explored.push([x,y]);             
                 goalFound = true;
             } else {
-                for (i = 0; i < delta.length; i++) {            
-                    let x2 = x + delta[i][0];
-                    let y2 = y + delta[i][1];  
-                                  
-                                      
+                var neighbors = getNeighbors(delta,x,y)
+                for (i = 0; i < neighbors.length; i++) {            
+                    let x2 = neighbors[i][0]
+                    let y2 = neighbors[i][1]
+
                     if (((x2 >= 0) && (x2 < ROWS)) && ((y2 >= 0) && (y2 < COLS))) {
                         if (closed[x2][y2] == false && maze[x2][y2] != -1) {
                             var neighbor = [x2,y2]
                             open.push(neighbor);
                             closed[x2][y2] = true;
-                            action[x2][y2] = i;
-                          
+                            action[x2][y2] = i;                         
                             
                         }
             
@@ -683,9 +622,7 @@ function bfs() {
                 }
             }
 
-
         }
-
 
     }
 
@@ -700,13 +637,11 @@ function greedyBfs() {
 
     if (VISUALZING) {
         return;
-    }  
+    } 
 
-    
     var explored = [];
     var directions = getDirections(false);
-    var delta = directions[0]
-    
+    var delta = directions[0]    
     var maze = getMaze();
 
     var closed = [];
@@ -715,16 +650,7 @@ function greedyBfs() {
         for (let j=0; j <= COLS+1; j++) {
             closed[i][j] = false;
         }
-    }
-    closed[START[0]][START[1]] = true;
-
-    var heuristic = [];
-    for (let i=0; i <= ROWS+1; i++) {
-        heuristic[i] = []
-        for (let j=0; j <= COLS+1; j++) {
-            heuristic[i][j] = calcHeuristic([i,j],GOAL);
-        }
-    }
+    }    
 
     var action = [];
     for (let i=0; i <= ROWS+1; i++) {
@@ -734,20 +660,17 @@ function greedyBfs() {
         }
     }
 
- 
+    closed[START[0]][START[1]] = true; 
     var x = START[0];
     var y = START[1];
-    var h = heuristic[x][y];
-
+    var h = calcHeuristic([x,y],GOAL);
+    var wall = -1;
 
     var open = new PriorityQueue();
     open.enqueue([h,x,y]);
-   
 
     var goalFound = false;
-    var noPath = false;
- 
-    
+    var noPath = false;   
     
     
     while (!goalFound && !noPath) {
@@ -759,9 +682,7 @@ function greedyBfs() {
             alertNoPath();
             
         } else {
-
-            // open = open.sort(function(a, b) { return a[0] - b[0]; });
-        
+       
             var currentNode = open.front();
             open.dequeue();           
           
@@ -773,32 +694,25 @@ function greedyBfs() {
                 explored.push([x,y]);               
                 goalFound = true;
             } else {
-                for (i = 0; i < delta.length; i++) {            
-                    let x2 = x + delta[i][0];
-                    let y2 = y + delta[i][1];  
-                                  
+                var neighbors = getNeighbors(delta,x,y)
+                for (i = 0; i < neighbors.length; i++) {            
+                    let x2 = neighbors[i][0]
+                    let y2 = neighbors[i][1]                                  
                                       
                     if (((x2 >= 0) && (x2 < ROWS)) && ((y2 >= 0) && (y2 < COLS))) {
-                        if (closed[x2][y2] == false && maze[x2][y2] != -1) {
-                            var h2 = heuristic[x2][y2];
-                            var neighbor = [h2,x2,y2]
+                        if (closed[x2][y2] == false && maze[x2][y2] != wall) {
+                            var h2 = calcHeuristic([x2,y2],GOAL);
+                            var neighbor = [h2,x2,y2];
                             open.enqueue(neighbor);
                             closed[x2][y2] = true;
-                            action[x2][y2] = i;
-                          
+                            action[x2][y2] = i;                       
                             
-                        }
-            
+                        }            
                     }
                 }
             }
-
-
         }
-
-
     }
-
     var path = getPath(delta,action);
     animate(explored,path,GOAL)
 
@@ -831,14 +745,6 @@ function dynamic() {
         }
     }
 
-    var policy = [];
-    for (let i=0; i <= ROWS+1; i++) {
-        policy[i] = []
-        for (let j=0; j <= COLS+1; j++) {
-            policy[i][j] = '-1';
-        }
-    }
-
     var action = [];
     for (let i=0; i <= ROWS+1; i++) {
         action[i] = []
@@ -853,58 +759,42 @@ function dynamic() {
     let explored = [];
     var wall = -1;
       
-    while (change) {
-        
+    while (change) {        
         
         change = false;
         for (let x=0; x < ROWS+1; x++) {
-            for (let y=0; y < COLS+1; y++) {
-                 
+            for (let y=0; y < COLS+1; y++) {                 
 
                 if (GOAL[0] == x && GOAL[1] == y) {
                     if (value[x][y] > 0) {
-                        value[x][y] = 0;
-                        policy[x][y] = 'goal';     
-                    }
-               
+                        value[x][y] = 0;   
+                    }               
 
                 } else if (maze[x][y] == 0) {         
                                 
                     for (a = 0; a < delta.length; a++) {            
                         let x2 = x + delta[a][0];
-                        let y2 = y + delta[a][1];    
-                               
-                        
-                    
+                        let y2 = y + delta[a][1];             
+
                         if ((x2 >= 0) && (x2 < ROWS) && (y2 >= 0) && (y2 < COLS) && maze[x2][y2] != wall) {
                                  
-                            v2 = value[x2][y2] + delta_cost[a]                                  
-                        
-                            if (v2 < value[x][y]) { 
-                                explored.push([x,y])  
-                                
-                                                              
-                                value[x][y] = v2;
-                                change = true;                                                                                      
-                                                            
-        
-                            }
+                            v2 = value[x2][y2] + delta_cost[a];                                                  
+                            var val = value[x][y]
+                            value[x][y] = Math.min(val, v2);
+                            if (v2 < val) { 
+                                explored.push([x,y]);                                
+                                change = true;
+                            }                            
+                        }               
 
-                        }
-                    
-                     
-                    }                
+                    }               
 
-                }
-          
+                }          
             }
       
         }
     }
 
-    
-    
-  
 
     let goalReached = false;
     let path = [];
@@ -914,13 +804,10 @@ function dynamic() {
     var node = [];
     var count = 0;
 
-
-    while (!goalReached) {  
+    while (!goalReached) { 
         
-        count+=1;
-       
-        for (a = 0; a < delta.length; a++) {
-            
+        count+=1;       
+        for (a = 0; a < delta.length; a++) {            
             let x1 = x + delta[a][0];
             let y1 = y + delta[a][1];
             if (0 <= x1 && x1 < ROWS+1 && 0 <= y1 && y1 < COLS+1) {               
@@ -928,21 +815,16 @@ function dynamic() {
                 
                 if(value[x1][y1] < cost) {
                     cost = value[x1][y1]
-                    node = [x1,y1]
-                    
+                    node = [x1,y1]                    
                 }
             }
         }
         path.push(node)
-        
-        
-
         x = node[0]
         y = node[1]
-
         if (count == 1000) {
             alertNoPath();
-            return -1;
+            break;
             
         }
 
